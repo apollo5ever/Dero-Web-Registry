@@ -25,4 +25,4 @@ Collection owners can edit collection type and registration price. Ownership can
 In order to navigate .dero names on dero web I have built a chrome extension
 
 ### Registering your .dero name
-If you have dns you can register your .dero name
+If you have dns you can register your .dero name to any asset you like including an oao, the most powerful and complicated option. If you go the oao route I recommend creating a new oao contract for each domain name. You can use the same set of role tokens for any number of oao contracts. 
