@@ -18,6 +18,10 @@ export function useRegisterName() {
           burn: 1,
           destination: address,
         },
+        {
+          scid: "8fe3b53bcbbf0dff7898dc9a660b28a687c4f44d22e8b6d07b44d2e9063b6e9e",
+          burn: 1,
+        },
       ],
       sc_rpc: [
         {

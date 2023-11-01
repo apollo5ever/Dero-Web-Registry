@@ -1,8 +1,129 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
+import { useSendTransaction } from "../hooks/useSendTransaction";
+import { useMintAsset } from "../hooks/useMintAsset";
+import { useGetBalance } from "../hooks/useGetBalance";
 
 export default function Mint() {
-  const assetTypes = ["OAO", "G45-NFT", "Artificer NFA", "Private Island"];
+  const [sendTransaction] = useSendTransaction();
+  const [mintAsset] = useMintAsset();
+  const [getBalance] = useGetBalance();
+  const assetTypes = [
+    "OAO",
+    "G45-NFT",
+    "Artificer NFA",
+    "Private Island",
+    "Role Token",
+  ];
   const [mintType, setMintType] = useState("OAO");
+  const [assetType, setAssetType] = useState("");
+  const [encodedData, setEncodedData] = useState("");
+  const [mintStatus, setMintStatus] = useState("initial");
+  const [scid, setScid] = useState("");
+  const [assetInfo, setAssetInfo] = useState([]);
+
+  const [roleCount, setRoleCount] = useState(1);
+
+  const handleAddRole = () => {
+    setRoleCount((prevCount) => prevCount + 1);
+  };
+
+  const handleRemoveRole = () => {
+    if (roleCount > 1) {
+      setRoleCount((prevCount) => prevCount - 1);
+    }
+  };
+
+  useEffect(() => {
+    let intervalId;
+
+    const checkBalance = async () => {
+      console.log("Checking balance for ", scid);
+      const balance = await getBalance(scid); // Assuming getBalance is your hook
+
+      if (balance >= 1) {
+        console.log("Balance is sufficient, stopping loop.");
+        setMintStatus("complete");
+        setAssetInfo((assetInfo) => [
+          ...assetInfo,
+          { scid: scid, type: assetType },
+        ]);
+
+        clearInterval(intervalId);
+      }
+    };
+
+    if (mintStatus === "waiting") {
+      // Start the loop on component mount
+      intervalId = setInterval(checkBalance, 10000); // 10 seconds interval
+    }
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [mintStatus, scid]);
+
+  const mint = async () => {
+    const scid = await mintAsset(mintType, { url:  });
+    setScid(scid);
+    setAssetType(mintType);
+    setMintStatus("waiting");
+
+    /*  if (mintType === "OAO") {
+      fetch("/oao.bas") // Assuming oao.bas is in the public folder
+        .then((response) => response.text())
+        .then((data) => {
+          // Encode the contents to Base64
+          return btoa(data);
+          setEncodedData(encodedData);
+        })
+        .catch((error) => {
+          console.error("Error reading the file:", error);
+        })
+        .then((sc) => {
+          let data = {
+            ringsize: 2,
+            sc_rpc: [
+              {
+                name: "entrypoint",
+                datatype: "S",
+                value: "Initialize",
+              },
+              {
+                name: "name",
+                datatype: "S",
+                value: "name",
+              },
+              {
+                name: "ceo",
+                datatype: "S",
+                value: "ceo",
+              },
+              {
+                name: "http",
+                datatype: "S",
+                value: "https://wild-poetry-8784.on.fleek.co/",
+              },
+            ],
+            sc: sc,
+          };
+          sendTransaction(data);
+        });
+    } */
+  };
+
+  useEffect(() => {
+    // Read the contents of the file
+    fetch("/oao.bas") // Assuming oao.bas is in the public folder
+      .then((response) => response.text())
+      .then((data) => {
+        // Encode the contents to Base64
+        const encodedData = btoa(data);
+        setEncodedData(encodedData);
+      })
+      .catch((error) => {
+        console.error("Error reading the file:", error);
+      });
+  }, []);
 
   const handleChangeType = (e) => {
     console.log(e.target.value);
@@ -19,6 +140,13 @@ export default function Mint() {
         your asset to be compatible with the Dero Web browser extension, it
         needs to contain properly formatted data.
       </p>
+      {assetInfo.map((x) => (
+        <p>
+          Successfully minted {x.type}! Don't lose this: {x.scid}
+        </p>
+      ))}
+      <p>{mintStatus === "waiting" ? "Waiting for Blocks..." : ""}</p>
+
       <div className="mb-3">
         <select className="form-select" onChange={handleChangeType}>
           {assetTypes.map((x, index) => (
@@ -32,13 +160,41 @@ export default function Mint() {
         <div className="mb-4">
           <h3>OAO .dero control</h3>
           <p>The most complicated and powerful option.</p>
+
           <div className="mb-3">
-            <input className="form-control" placeholder="ceo" />
+            <h4>Add Roles</h4>
+            {Array.from({ length: roleCount }).map((_, index) => (
+              <div key={index} className="mb-3">
+                <input
+                  className="form-control"
+                  placeholder={`Trustee #${index + 1} - SCID`}
+                />
+                <input
+                  className="form-control"
+                  placeholder={`Trustee #${index + 1} - Dero Address`}
+                />
+              </div>
+            ))}
+            <button className="btn btn-success me-2" onClick={handleAddRole}>
+              Add Trustee
+            </button>
+            <button className="btn btn-danger" onClick={handleRemoveRole}>
+              Remove Trustee
+            </button>
           </div>
+
           <div className="mb-3">
-            <input className="form-control" placeholder="Trustee #1" />
+            <h4>Add Metadata</h4>
+            <div className="mb-3">
+              <input className="form-control" placeholder="OAO Name" id="name" />
+            </div>
+            <div className="mb-3">
+              <label>URL for .dero content</label>
+              <input className="form-control" placeholder="http://"  id="url" />
+            </div>
           </div>
-          <button className="btn btn-primary">Add Trustee</button>
+
+          <button className="btn btn-primary">Submit</button>
         </div>
       )}
       {mintType === "Private Island" && (
@@ -141,6 +297,7 @@ export default function Mint() {
           </div>
         </div>
       )}
+      <Button onClick={mint}>Mint</Button>
     </div>
   );
 }

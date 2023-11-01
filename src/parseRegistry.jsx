@@ -17,11 +17,7 @@ export default function ParseRegistry() {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getSC(
-        "f60bc50eee50c7d85111087cdb326655a4c107ae3112b0ff23db0d37d2843384",
-        false,
-        true
-      );
+      const data = await getSC(state.scid, false, true);
       setData(data);
       let collections = Object.keys(data.stringkeys).filter((key) =>
         key.endsWith("RegFee")
@@ -41,9 +37,9 @@ export default function ParseRegistry() {
         activeKey={key}
         onSelect={(k) => setKey(k)}
       >
-        <Tab eventKey="browse" title=".dero Name Registration">
+        <Tab eventKey="register" title=".dero Name Registration">
           <div style={{ marginTop: "20px" }}>
-            <NameRegistrar />
+            <NameRegistrar setKey={setKey} />
           </div>
         </Tab>
         <Tab eventKey="addcategory" title="Add Category">
@@ -51,7 +47,7 @@ export default function ParseRegistry() {
             <AddCategory />
           </div>
         </Tab>
-        <Tab eventKey="register" title="Mint Asset">
+        <Tab eventKey="mint" title="Mint Asset">
           <div style={{ marginTop: "20px" }}>
             <Mint />
           </div>

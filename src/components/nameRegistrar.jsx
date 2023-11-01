@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useCheckNameAvailability } from "../hooks/useCheckNameAvailability";
 import { useAssetLookup } from "../hooks/useAssetLookup";
 import { useRegisterName } from "../hooks/useRegisterName";
+import { LoginContext } from "../LoginContext";
 
-export default function NameRegistrar() {
+export default function NameRegistrar({ setKey }) {
   const [checkNameAvailability] = useCheckNameAvailability();
   const [registerName] = useRegisterName();
   const [assetLookup] = useAssetLookup();
@@ -11,6 +12,7 @@ export default function NameRegistrar() {
   const [asset, setAsset] = useState("");
   const [available, setAvailable] = useState(true);
   const [names, setNames] = useState([]);
+  const [state, setState] = useContext(LoginContext);
 
   const handleNameChange = async (e) => {
     const value = e.target.value;
@@ -18,7 +20,7 @@ export default function NameRegistrar() {
 
     if (value.endsWith(".dero")) {
       const availability = await checkNameAvailability(
-        "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
+        state.scid,
         value.slice(0, -5)
       );
 
@@ -36,17 +38,8 @@ export default function NameRegistrar() {
   };
   const handleRegister = async () => {
     // Add your registration logic here
-    let names = await assetLookup(
-      "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
-      asset
-    );
-    await registerName(
-      "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
-      name.slice(0, -5),
-      asset,
-      "",
-      names.length
-    );
+    let names = await assetLookup(state.scid, asset);
+    await registerName(state.scid, name.slice(0, -5), asset, "", names.length);
     console.log("index", names.length);
 
     console.log(`Registering name: ${name}`);
@@ -54,6 +47,10 @@ export default function NameRegistrar() {
 
   return (
     <>
+      <p>
+        You must prepare an asset to pair your .dero name with. Each .dero name
+        registration will cost 1 dns.
+      </p>
       <div className="mb-3">
         <input
           type="text"
@@ -61,7 +58,14 @@ export default function NameRegistrar() {
           value={asset}
           onChange={handleAssetChage}
         />
-        <button className="btn btn-primary">No Asset? Mint First</button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setKey("mint");
+          }}
+        >
+          No Asset? Mint First
+        </button>
         <input
           type="text"
           placeholder="name"
