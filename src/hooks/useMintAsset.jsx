@@ -19,6 +19,7 @@ export function useMintAsset() {
       }
     } else if (type === "OAO") {
       try {
+        console.log(data);
         let txid = await mintOAO(data);
         console.log("seat scid ", txid);
         return txid;

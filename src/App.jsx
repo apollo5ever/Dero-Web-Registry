@@ -38,9 +38,9 @@ function App() {
       <header>
         <Navbar expand="lg" className="bg-body-tertiary">
           <Container>
-            <Navbar.Brand href="#home">DERO WEB</Navbar.Brand>
+            <Navbar.Brand>DERO WEB</Navbar.Brand>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            {/*  <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
                 <Nav.Link href="#home">Home</Nav.Link>
@@ -59,7 +59,7 @@ function App() {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-            </Navbar.Collapse>
+            </Navbar.Collapse>*/}
           </Container>
           <div className="d-flex flex-column">
             <RpcToggle />

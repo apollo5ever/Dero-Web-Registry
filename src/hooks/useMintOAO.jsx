@@ -7,14 +7,27 @@ export function useMintOAO() {
   const [getAddress] = useGetAddress();
   const [getGasEstimate] = useGetGasEstimate();
 
-  async function mintOAO({ data }) {
+  async function mintOAO(data) {
+    let trustees = "";
+    let seats = "";
+    let transfers = [];
+    for (let i = 0; i < data.trusteeAddresses.length; i++) {
+      seats = seats.concat(data.trusteeSCIDs[i]);
+      trustees = trustees.concat(data.trusteeAddresses[i]);
+      transfers.push({
+        burn: 1,
+        scid: data.trusteeSCIDs[i],
+      });
+    }
     try {
+      console.log(data);
       const response = await fetch("/oao.bas");
-      const data = await response.text();
-      const sc = btoa(data);
+      const scdata = await response.text();
+      const sc = btoa(scdata);
       const result = await sendTransaction({
         ringsize: 2,
         sc,
+        transfers: transfers,
         sc_rpc: [
           {
             name: "entrypoint",
@@ -23,13 +36,12 @@ export function useMintOAO() {
           },
           {
             name: "name",
-            value: "test",
+            value: data.name,
             datatype: "S",
           },
           {
             name: "ceo",
-            value:
-              "8860c63dd8a0ee66c2cbe304b4a1d4991da7dfe0443674cda06082565a5a74cc",
+            value: data.ceo,
             datatype: "S",
           },
           {
@@ -39,19 +51,17 @@ export function useMintOAO() {
           },
           {
             name: "seats",
-            value:
-              "c623dc933273fa64b1d33991171e1d56ecdb5ee59b767dc8dc16a106ea15aac6",
+            value: seats,
             datatype: "S",
           },
           {
             name: "trustees",
-            value:
-              "deto1qyvyeyzrcm2fzf6kyq7egkes2ufgny5xn77y6typhfx9s7w3mvyd5qqynr5hx",
+            value: trustees,
             datatype: "S",
           },
           {
             name: "board",
-            value: 1,
+            value: data.trusteeAddresses.length,
             datatype: "U",
           },
         ],

@@ -23,6 +23,38 @@ export default function Mint() {
   const [assetInfo, setAssetInfo] = useState([]);
 
   const [roleCount, setRoleCount] = useState(1);
+  const [formData, setFormData] = useState({
+    ceo: "",
+    trusteeSCIDs: [""], // Initialize with one empty SCID field
+    trusteeAddresses: [""], // Initialize with one empty address field
+    name: "",
+    url: "",
+    privateIslandName: "",
+    islandImageURL: "",
+    islandTagline: "",
+    islandDescription: "",
+    collection: "",
+    metadata: "",
+    metadataFormat: "",
+    nameHdr: "",
+    descrHdr: "",
+    typeHdr: "",
+    iconURLHdr: "",
+    tagsHdr: "",
+    fileCheckC: "",
+    fileCheckS: "",
+    fileURL: "",
+    fileSignURL: "",
+    coverURL: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleAddRole = () => {
     setRoleCount((prevCount) => prevCount + 1);
@@ -31,6 +63,33 @@ export default function Mint() {
   const handleRemoveRole = () => {
     if (roleCount > 1) {
       setRoleCount((prevCount) => prevCount - 1);
+    }
+  };
+
+  const handleTrusteeChange = (index, type, e) => {
+    const updatedTrustees = [...formData[type]];
+    updatedTrustees[index] = e.target.value;
+    setFormData({
+      ...formData,
+      [type]: updatedTrustees,
+    });
+  };
+
+  const handleAddTrustee = (type) => {
+    setFormData({
+      ...formData,
+      [type]: [...formData[type], ""],
+    });
+  };
+
+  const handleRemoveTrustee = (type) => {
+    if (formData[type].length > 1) {
+      const updatedTrustees = [...formData[type]];
+      updatedTrustees.pop();
+      setFormData({
+        ...formData,
+        [type]: updatedTrustees,
+      });
     }
   };
 
@@ -55,7 +114,7 @@ export default function Mint() {
 
     if (mintStatus === "waiting") {
       // Start the loop on component mount
-      intervalId = setInterval(checkBalance, 10000); // 10 seconds interval
+      intervalId = setInterval(checkBalance, 4000); // 10 seconds interval
     }
 
     // Cleanup the interval on component unmount
@@ -63,7 +122,7 @@ export default function Mint() {
   }, [mintStatus, scid]);
 
   const mint = async () => {
-    const scid = await mintAsset(mintType, { url:  });
+    const scid = await mintAsset(mintType, formData);
     setScid(scid);
     setAssetType(mintType);
     setMintStatus("waiting");
@@ -161,24 +220,49 @@ export default function Mint() {
           <h3>OAO .dero control</h3>
           <p>The most complicated and powerful option.</p>
 
+          <h4>Add Roles</h4>
           <div className="mb-3">
-            <h4>Add Roles</h4>
-            {Array.from({ length: roleCount }).map((_, index) => (
+            <input
+              className="form-control"
+              placeholder="CEO Token SCID"
+              id="ceo"
+              name="ceo"
+              value={formData.ceo}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-3">
+            {formData.trusteeSCIDs.map((_, index) => (
               <div key={index} className="mb-3">
                 <input
                   className="form-control"
                   placeholder={`Trustee #${index + 1} - SCID`}
+                  value={formData.trusteeSCIDs[index]}
+                  onChange={(e) =>
+                    handleTrusteeChange(index, "trusteeSCIDs", e)
+                  }
                 />
                 <input
                   className="form-control"
                   placeholder={`Trustee #${index + 1} - Dero Address`}
+                  value={formData.trusteeAddresses[index]}
+                  onChange={(e) =>
+                    handleTrusteeChange(index, "trusteeAddresses", e)
+                  }
                 />
               </div>
             ))}
-            <button className="btn btn-success me-2" onClick={handleAddRole}>
+            <button
+              className="btn btn-success me-2"
+              onClick={() => handleAddTrustee("trusteeSCIDs")}
+            >
               Add Trustee
             </button>
-            <button className="btn btn-danger" onClick={handleRemoveRole}>
+            <button
+              className="btn btn-danger"
+              onClick={() => handleRemoveTrustee("trusteeSCIDs")}
+            >
               Remove Trustee
             </button>
           </div>
@@ -186,17 +270,31 @@ export default function Mint() {
           <div className="mb-3">
             <h4>Add Metadata</h4>
             <div className="mb-3">
-              <input className="form-control" placeholder="OAO Name" id="name" />
+              <input
+                className="form-control"
+                placeholder="OAO Name"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+              />
             </div>
             <div className="mb-3">
               <label>URL for .dero content</label>
-              <input className="form-control" placeholder="http://"  id="url" />
+              <input
+                className="form-control"
+                placeholder="http://"
+                id="url"
+                name="url"
+                value={formData.url}
+                onChange={handleChange}
+              />
             </div>
           </div>
-
-          <button className="btn btn-primary">Submit</button>
+          {/* ... Other fields ... */}
         </div>
       )}
+
       {mintType === "Private Island" && (
         <div className="mb-4">
           <h3>Private Island</h3>

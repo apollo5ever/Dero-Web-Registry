@@ -46,7 +46,8 @@ export default function NameRegistrar({ setKey }) {
   };
 
   return (
-    <>
+    <div className="container mt-5">
+      <h1>Register Your .dero Domain Name</h1>
       <p>
         You must prepare an asset to pair your .dero name with. Each .dero name
         registration will cost 1 dns.
@@ -82,6 +83,6 @@ export default function NameRegistrar({ setKey }) {
       >
         Register
       </button>
-    </>
+    </div>
   );
 }

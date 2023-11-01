@@ -1,79 +1,153 @@
-import React, { useState } from "react";
-import { useCheckNameAvailability } from "../hooks/useCheckNameAvailability";
-import { useAssetLookup } from "../hooks/useAssetLookup";
-import { useRegisterName } from "../hooks/useRegisterName";
+import React, { useState, useContext, useEffect } from "react";
+import { LoginContext } from "../LoginContext";
+import { useSendTransaction } from "../hooks/useSendTransaction";
+import { useGetGasEstimate } from "../hooks/useGetGasEstimate";
+import { useGetAddress } from "../hooks/useGetAddress";
+import { useGetSC } from "../hooks/useGetSC";
 
 export default function Lotto() {
-  const [checkNameAvailability] = useCheckNameAvailability();
-  const [registerName] = useRegisterName();
-  const [assetLookup] = useAssetLookup();
-  const [amount, setAmount] = useState(0);
+  const [state, setState] = useContext(LoginContext);
+  const [amount, setAmount] = useState(1);
+  const [sendTransaction] = useSendTransaction();
+  const [getGasEstimate] = useGetGasEstimate();
+  const [getAddress] = useGetAddress();
+  const [getSC] = useGetSC();
+  const [lottos, setLottos] = useState([]);
 
-  const handleNameChange = async (e) => {
-    const value = e.target.value;
-    setName(value);
+  const scid = state.lotto;
+  const dns = state.dns;
 
-    if (value.endsWith(".dero")) {
-      const availability = await checkNameAvailability(
-        "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
-        value.slice(0, -5)
+  useEffect(() => {
+    const getLotto = async () => {
+      let lottos = [];
+      const lottoSC = await getSC(scid, false, true);
+      const treasuryPattern = /treasury/;
+      let assets = Object.keys(lottoSC.stringkeys).filter((x) =>
+        treasuryPattern.test(x)
       );
-
-      if (availability.scid) {
-        setAvailable(false);
-      } else {
-        setAvailable(true);
+      for (let i = 0; i < assets.length; i++) {
+        let scid = assets[i].slice(8);
+        let nextDraw = lottoSC.stringkeys[`nextDraw${scid}`];
+        let prize;
+        if (
+          scid ===
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ) {
+          prize = "DERO";
+        }
+        let asset = {
+          nextDraw: nextDraw,
+          prize: lottoSC.stringkeys[assets[i]],
+          asset: prize,
+        };
+        console.log("asset object", asset);
+        lottos.push(asset);
       }
-    } else {
-      setAvailable(true);
-    }
-  };
-  const handleAmountChage = (e) => {
-    setAmount(e.target.value);
-  };
-  const handleRegister = async () => {
-    // Add your registration logic here
-    let names = await assetLookup(
-      "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
-      asset
-    );
-    await registerName(
-      "ae0a1b2c1c8362278cc50333ad28c474537fee19ed771902066dfb4aae6cc9f4",
-      name.slice(0, -5),
-      asset,
-      "",
-      names.length
-    );
-    console.log("index", names.length);
+      setLottos(lottos);
+      console.log("assets: ", assets);
+    };
+    getLotto();
+  }, []);
 
-    console.log(`Registering name: ${name}`);
+  const handleAmountChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+
+    // If the value is valid (a positive integer or zero), update the state.
+    // Otherwise, set it to 1 (minimum value).
+    setAmount(isNaN(value) || value <= 0 ? 1 : value);
+  };
+
+  const handlePurchase = async () => {
+    const address = await getAddress();
+    console.log("user is purchasing ", amount, " tickets");
+    const fees = await getGasEstimate({
+      scid: scid,
+      ringsize: 2,
+      signer: address,
+      transfers: [
+        {
+          burn: parseInt(amount * 1000),
+          scid: dns,
+        },
+      ],
+      gas_rpc: [
+        {
+          name: "SC_ACTION",
+          datatype: "U",
+          value: 0,
+        },
+        {
+          name: "SC_ID",
+          datatype: "H",
+          value: scid,
+        },
+        {
+          name: "entrypoint",
+          datatype: "S",
+          value: "BuyTickets",
+        },
+      ],
+    });
+    sendTransaction({
+      scid: scid,
+      ringsize: 2,
+      fees: fees,
+      transfers: [
+        {
+          burn: parseInt(amount * 1000),
+          scid: dns,
+        },
+      ],
+      sc_rpc: [
+        {
+          name: "entrypoint",
+          datatype: "S",
+          value: "BuyTickets",
+        },
+      ],
+    });
   };
 
   return (
-    <>
-      <div className="mb-3">
-        <h1>Welcome to the DNS Lottery</h1>
-        <p>
-          Each month the Dero Web OAO will transfer 25% of that month's sales
-          into the DNS Lottery Pool. Each month a winner will be drawn and he
-          will win the entire pool. Winnings are sent out automatically, no need
-          to withdraw.
-        </p>
-        <p>
-          There are only 50 tickets available. That means each ticket has a
-          minimum 2% chance of winning each month. Each ticket costs 1000 DNS.
-          Tickets never expire and can be redeemed for the original 1000 DNS at
-          any time.
-        </p>
-        <input
-          type="number"
-          placeholder="number of tickets"
-          onChange={handleAmountChage}
-        />
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-6">
+          <h1>Welcome to the DNS Lottery</h1>
+          <p>
+            Each month the Dero Web OAO will transfer 25% of that month's sales
+            into the DNS Lottery Pool. Each month a winner will be drawn and he
+            will win the entire pool. Winnings are sent out automatically, no
+            need to withdraw.
+          </p>
+          <p>
+            There are only 50 tickets available. That means each ticket has a
+            minimum 2% chance of winning each month. Each ticket costs 1000 DNS.
+            Tickets never expire and can be redeemed for the original 1000 DNS
+            at any time.
+          </p>
+          <input
+            type="number"
+            className="form-control mb-3"
+            placeholder="# tickets"
+            onChange={handleAmountChange}
+            min="1"
+            max="50"
+          />
+          <button onClick={handlePurchase} className="btn btn-primary">
+            Purchase {amount > 0 && `(${amount * 1000} DNS)`}
+          </button>
+        </div>
+        <div className="col-md-6">
+          <div className="prizes">
+            <h1>Current Prize Pool</h1>
+            {lottos.map((x, i) => (
+              <p key={i}>
+                Prize # {i + 1}: {x.prize} {x.asset}
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
-      <button onClick={handleRegister} className="btn btn-primary">
-        Purchase {amount > 0 && "(" + amount * 1000 + "DNS)"}
-      </button>
-    </>
+    </div>
   );
 }

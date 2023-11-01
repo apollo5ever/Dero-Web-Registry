@@ -12,6 +12,8 @@ const LoginProvider = (props) => {
     walletMode: "rpc",
     daemonMode: "pools",
     scid: "a40759ab41b642551584b9b91eaae4d95482b73627d6eaa9e08b6cc54c06fdac",
+    dns: "8fe3b53bcbbf0dff7898dc9a660b28a687c4f44d22e8b6d07b44d2e9063b6e9e",
+    lotto: "cf023a114189ab4e9076c1aced74b77f081d4f1f963c03f4b17e7c87e16083e7",
   });
   return (
     <LoginContext.Provider value={[state, setState]}>

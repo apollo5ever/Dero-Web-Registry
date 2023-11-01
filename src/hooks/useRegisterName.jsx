@@ -9,18 +9,16 @@ export function useRegisterName() {
   async function registerName(scid, name, asset, token, index) {
     let address = await getRandomAddress();
 
+    //removed asset burn, I think that was unnecessary
+
     let data = {
       scid: scid,
       ringsize: 2,
       transfers: [
         {
-          scid: asset,
-          burn: 1,
-          destination: address,
-        },
-        {
           scid: "8fe3b53bcbbf0dff7898dc9a660b28a687c4f44d22e8b6d07b44d2e9063b6e9e",
           burn: 1,
+          destination: address,
         },
       ],
       sc_rpc: [

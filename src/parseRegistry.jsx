@@ -29,9 +29,9 @@ export default function ParseRegistry() {
 
   return (
     <>
-      <h1>Dero Web</h1>
-      <h4>Building a Network of Trust</h4>
-
+      {/* <div className="container mt-5">
+        <h4>Building a Network of Trust</h4>
+  </div>*/}
       <Tabs
         id="controlled-tab-example"
         activeKey={key}
@@ -42,11 +42,7 @@ export default function ParseRegistry() {
             <NameRegistrar setKey={setKey} />
           </div>
         </Tab>
-        <Tab eventKey="addcategory" title="Add Category">
-          <div style={{ marginTop: "20px" }}>
-            <AddCategory />
-          </div>
-        </Tab>
+
         <Tab eventKey="mint" title="Mint Asset">
           <div style={{ marginTop: "20px" }}>
             <Mint />
@@ -57,6 +53,11 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
+        {/*<Tab eventKey="categories" title="Categories">
+          <div style={{ marginTop: "20px" }}>
+            <AddCategory />
+          </div>
+  </Tab>*/}
       </Tabs>
     </>
   );
