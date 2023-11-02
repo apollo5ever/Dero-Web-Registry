@@ -21,7 +21,8 @@ export default function NameRegistrar({ setKey }) {
     if (value.endsWith(".dero")) {
       const availability = await checkNameAvailability(
         state.scid,
-        value.slice(0, -5)
+        value.slice(0, -5),
+        ".dero"
       );
 
       if (availability.scid) {
@@ -39,7 +40,14 @@ export default function NameRegistrar({ setKey }) {
   const handleRegister = async () => {
     // Add your registration logic here
     let names = await assetLookup(state.scid, asset);
-    await registerName(state.scid, name.slice(0, -5), asset, "", names.length);
+    await registerName(
+      state.scid,
+      name.slice(0, -5),
+      asset,
+      "",
+      names.length,
+      ".dero"
+    );
     console.log("index", names.length);
 
     console.log(`Registering name: ${name}`);

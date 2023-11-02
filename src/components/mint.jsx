@@ -9,13 +9,14 @@ export default function Mint() {
   const [mintAsset] = useMintAsset();
   const [getBalance] = useGetBalance();
   const assetTypes = [
+    "Basic Name Token",
     "OAO",
     "G45-NFT",
     "Artificer NFA",
     "Private Island",
     "Role Token",
   ];
-  const [mintType, setMintType] = useState("OAO");
+  const [mintType, setMintType] = useState("Basic Name Token");
   const [assetType, setAssetType] = useState("");
   const [encodedData, setEncodedData] = useState("");
   const [mintStatus, setMintStatus] = useState("initial");
@@ -29,10 +30,9 @@ export default function Mint() {
     trusteeAddresses: [""], // Initialize with one empty address field
     name: "",
     url: "",
-    privateIslandName: "",
-    islandImageURL: "",
-    islandTagline: "",
-    islandDescription: "",
+    image: "",
+    tagline: "",
+    bio: "",
     collection: "",
     metadata: "",
     metadataFormat: "",
@@ -215,6 +215,27 @@ export default function Mint() {
           ))}
         </select>
       </div>
+      {mintType === "Basic Name Token" && (
+        <div className="mb-4">
+          <h3>Basic Name Token</h3>
+          <p>
+            This token standard is a bare-bones asset designed to point domain
+            names to URLs.
+          </p>
+          <h4>Choose URL for Browser</h4>
+          <p>More URL types can be added down the line</p>
+          <div className="mb-3">
+            <input
+              className="form-control"
+              placeholder="url"
+              id="url"
+              name="url"
+              value={formData.url}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      )}
       {mintType === "OAO" && (
         <div className="mb-4">
           <h3>OAO .dero control</h3>
@@ -316,10 +337,38 @@ export default function Mint() {
             Private Islands.
           </p>
           <div className="mb-3">
-            <input className="form-control" placeholder="Private Island Name" />
-            <input className="form-control" placeholder="Island Image URL" />
-            <input className="form-control" placeholder="Island Tagline" />
-            <input className="form-control" placeholder="Island Description" />
+            <input
+              className="form-control"
+              placeholder="Private Island Name"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control"
+              placeholder="Island Image URL"
+              id="image"
+              name="image"
+              value={formData.image}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control"
+              placeholder="Island Tagline"
+              id="tagline"
+              name="tagline"
+              value={formData.tagline}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control"
+              placeholder="Island Description"
+              id="bio"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+            />
           </div>
         </div>
       )}

@@ -6,7 +6,7 @@ export function useRegisterName() {
   const [getRandomAddress] = useGetRandomAddress();
   // const logger = useContext(LoggerContext);
 
-  async function registerName(scid, name, asset, token, index) {
+  async function registerName(scid, name, asset, token, index, collection) {
     let address = await getRandomAddress();
 
     //removed asset burn, I think that was unnecessary
@@ -30,7 +30,7 @@ export function useRegisterName() {
         {
           name: "collection",
           datatype: "S",
-          value: ".dero",
+          value: collection,
         },
         {
           name: "name",

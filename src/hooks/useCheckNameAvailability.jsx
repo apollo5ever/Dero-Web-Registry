@@ -4,9 +4,9 @@ export function useCheckNameAvailability() {
   const [getSC] = useGetSC();
   // const logger = useContext(LoggerContext);
 
-  async function checkNameAvailability(scid, name) {
+  async function checkNameAvailability(scid, name, collection) {
     let registryData = await getSC(scid, false, true, null, null, [
-      `a.dero${name}`,
+      `a${collection + name}`,
     ]);
     console.log(registryData.valuesstring);
     if (registryData.valuesstring[0].startsWith("NOT")) {
