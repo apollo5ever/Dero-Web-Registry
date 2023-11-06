@@ -1,5 +1,5 @@
-Function Initialize(name String,ceo String,http String, seats String, trustees String,board Uint64) Uint64
-10 STORE("QUORUM",0)
+Function Initialize(name String,ceo String,http String, seats String, trustees String,board Uint64,quorum Uint64) Uint64
+10 STORE("QUORUM",quorum)
 20 STORE("CEO",ceo)
 30 SEND_ASSET_TO_ADDRESS(SIGNER(),1,SCID())
 40 STORE("0000000000000000000000000000000000000000000000000000000000000000","DERO")

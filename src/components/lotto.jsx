@@ -47,7 +47,7 @@ export default function Lotto() {
       console.log("assets: ", assets);
     };
     getLotto();
-  }, []);
+  }, [state.daemonMode]);
 
   const handleAmountChange = (e) => {
     const value = parseInt(e.target.value, 10);
@@ -142,7 +142,7 @@ export default function Lotto() {
             <h1>Current Prize Pool</h1>
             {lottos.map((x, i) => (
               <p key={i}>
-                Prize # {i + 1}: {x.prize} {x.asset}
+                Prize # {i + 1}: {x.prize / 100000} {x.asset}
               </p>
             ))}
           </div>

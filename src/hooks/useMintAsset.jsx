@@ -2,12 +2,14 @@ import { useMintSeat } from "./useMintSeat";
 import { useMintOAO } from "./useMintOAO";
 import { useMintBNT } from "./useMintBNT";
 import { useMintIsland } from "./useMintIsland";
+import { useMintG45 } from "./useMintG45";
 
 export function useMintAsset() {
   const [mintSeat] = useMintSeat();
   const [mintOAO] = useMintOAO();
   const [mintBNT] = useMintBNT();
   const [mintIsland] = useMintIsland();
+  const [mintG45] = useMintG45();
 
   async function mintAsset(type, data) {
     console.log("Mint asset type: ", type);
@@ -15,7 +17,7 @@ export function useMintAsset() {
 
     if (type === "Role Token") {
       try {
-        let txid = await mintSeat();
+        let txid = await mintSeat(data);
         console.log("seat scid ", txid);
         return txid;
       } catch (error) {
@@ -47,6 +49,15 @@ export function useMintAsset() {
         return txid;
       } catch (error) {
         console.error("Error minting island:", error);
+      }
+    } else if (type === "G45-NFT") {
+      try {
+        console.log(data);
+        let txid = await mintG45(data);
+        console.log("g45 scid ", txid);
+        return txid;
+      } catch (error) {
+        console.error("Error minting g45:", error);
       }
     }
   }

@@ -27,7 +27,6 @@ export function useMintOAO() {
       const result = await sendTransaction({
         ringsize: 2,
         sc,
-        transfers: transfers,
         sc_rpc: [
           {
             name: "entrypoint",
@@ -62,6 +61,11 @@ export function useMintOAO() {
           {
             name: "board",
             value: data.trusteeAddresses.length,
+            datatype: "U",
+          },
+          {
+            name: "quorum",
+            value: parseInt(data.quorum),
             datatype: "U",
           },
         ],

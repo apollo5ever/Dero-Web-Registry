@@ -3,11 +3,13 @@ import { Button } from "react-bootstrap";
 import { useSendTransaction } from "../hooks/useSendTransaction";
 import { useMintAsset } from "../hooks/useMintAsset";
 import { useGetBalance } from "../hooks/useGetBalance";
+import { useGetAddress } from "../hooks/useGetAddress";
 
 export default function Mint() {
   const [sendTransaction] = useSendTransaction();
   const [mintAsset] = useMintAsset();
   const [getBalance] = useGetBalance();
+  const [getAddress] = useGetAddress();
   const assetTypes = [
     "Basic Name Token",
     "OAO",
@@ -28,6 +30,8 @@ export default function Mint() {
     ceo: "",
     trusteeSCIDs: [""], // Initialize with one empty SCID field
     trusteeAddresses: [""], // Initialize with one empty address field
+    trusteeList: [""],
+    quorum: null,
     name: "",
     url: "",
     image: "",
@@ -47,6 +51,28 @@ export default function Mint() {
     fileSignURL: "",
     coverURL: "",
   });
+
+  const handleMintRole = async (type, index) => {
+    if (type === "CEO") {
+      const address = await getAddress();
+      const scid = await mintAsset("Role Token", { address: address });
+      setFormData({ ...formData, ceo: scid });
+    } else if (type === "Trustee") {
+      if (!formData.trusteeAddresses[index]?.startsWith("dero")) {
+        let warning = formData.trusteeAddresses;
+        warning[index] = "MUST FIRST SPECIFY ADDRESS!!";
+        setFormData({ ...formData, trusteeAddresses: warning });
+        return;
+      }
+      const scid = await mintAsset("Role Token", {
+        address: formData.trusteeAddresses[index],
+      });
+      handleTrusteeChange(index, "trusteeSCIDs", { target: { value: scid } });
+      console.log("mint trustee token ", index, {
+        address: formData.trusteeAddresses[index],
+      });
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -239,7 +265,12 @@ export default function Mint() {
       {mintType === "OAO" && (
         <div className="mb-4">
           <h3>OAO .dero control</h3>
-          <p>The most complicated and powerful option.</p>
+          <p>
+            The most complicated and powerful option. This allows an
+            organization instead of an individual to control a .dero domain
+            name. If you don't already have role tokens you can mint them on
+            this page.
+          </p>
 
           <h4>Add Roles</h4>
           <div className="mb-3">
@@ -251,19 +282,17 @@ export default function Mint() {
               value={formData.ceo}
               onChange={handleChange}
             />
+            <button
+              className="btn btn-success me-2"
+              onClick={() => handleMintRole("CEO")}
+            >
+              No CEO Token? Mint
+            </button>
           </div>
 
           <div className="mb-3">
-            {formData.trusteeSCIDs.map((_, index) => (
+            {formData.trusteeList.map((_, index) => (
               <div key={index} className="mb-3">
-                <input
-                  className="form-control"
-                  placeholder={`Trustee #${index + 1} - SCID`}
-                  value={formData.trusteeSCIDs[index]}
-                  onChange={(e) =>
-                    handleTrusteeChange(index, "trusteeSCIDs", e)
-                  }
-                />
                 <input
                   className="form-control"
                   placeholder={`Trustee #${index + 1} - Dero Address`}
@@ -272,20 +301,47 @@ export default function Mint() {
                     handleTrusteeChange(index, "trusteeAddresses", e)
                   }
                 />
+                <input
+                  className="form-control"
+                  placeholder={`Trustee #${index + 1} - Token SCID`}
+                  value={formData.trusteeSCIDs[index]}
+                  onChange={(e) =>
+                    handleTrusteeChange(index, "trusteeSCIDs", e)
+                  }
+                />
+                <button
+                  className="btn btn-success me-2"
+                  onClick={() => handleMintRole("Trustee", index)}
+                >
+                  No Trustee Token? Mint & Send
+                </button>
               </div>
             ))}
             <button
               className="btn btn-success me-2"
-              onClick={() => handleAddTrustee("trusteeSCIDs")}
+              onClick={() => handleAddTrustee("trusteeList")}
             >
               Add Trustee
             </button>
             <button
               className="btn btn-danger"
-              onClick={() => handleRemoveTrustee("trusteeSCIDs")}
+              onClick={() => handleRemoveTrustee("trusteeList")}
             >
               Remove Trustee
             </button>
+            <div className="mb-3">
+              <input
+                className="form-control"
+                placeholder="Quorum"
+                id="quorum"
+                name="quorum"
+                value={formData.quorum}
+                onChange={handleChange}
+                type="number"
+                min="0"
+                max={formData.trusteeList.length}
+              />
+            </div>
           </div>
 
           <div className="mb-3">
@@ -386,13 +442,34 @@ export default function Mint() {
             another so don't sweat it.
           </p>
           <div className="mb-3">
-            <input className="form-control" placeholder="collection" />
+            <input
+              className="form-control"
+              placeholder="collection"
+              id="collection"
+              name="collection"
+              value={formData.collection}
+              onChange={handleChange}
+            />
           </div>
           <div className="mb-3">
-            <input className="form-control" placeholder="metadata" />
+            <input
+              className="form-control"
+              placeholder="metadata"
+              id="metadata"
+              name="metadata"
+              value={formData.metadata}
+              onChange={handleChange}
+            />
           </div>
           <div className="mb-3">
-            <input className="form-control" placeholder="metadataFormat" />
+            <input
+              className="form-control"
+              placeholder="metadataFormat"
+              id="metadataFormat"
+              name="metadataFormat"
+              value={formData.metadataFormat}
+              onChange={handleChange}
+            />
           </div>
         </div>
       )}
@@ -400,7 +477,10 @@ export default function Mint() {
         <div className="mb-4">
           <h3>Artificer NFA</h3>
           <p>
-            <a href="" target="_blank">
+            <a
+              href="https://github.com/civilware/artificer-nfa-standard"
+              target="_blank"
+            >
               The Artificer NFA standard
             </a>{" "}
             has two address-based roles, "creator" and "owner". Metadata can

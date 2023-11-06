@@ -1,9 +1,12 @@
+import React, { useContext } from "react";
 import { useSendTransaction } from "./useSendTransaction";
 import { useGetRandomAddress } from "./useGetRandomAddress";
+import { LoginContext } from "../LoginContext";
 
 export function useRegisterName() {
   const [sendTransaction] = useSendTransaction();
   const [getRandomAddress] = useGetRandomAddress();
+  const [state, setState] = useContext(LoginContext);
   // const logger = useContext(LoggerContext);
 
   async function registerName(scid, name, asset, token, index, collection) {
@@ -16,7 +19,7 @@ export function useRegisterName() {
       ringsize: 2,
       transfers: [
         {
-          scid: "8fe3b53bcbbf0dff7898dc9a660b28a687c4f44d22e8b6d07b44d2e9063b6e9e",
+          scid: state.dns,
           burn: 1,
           destination: address,
         },

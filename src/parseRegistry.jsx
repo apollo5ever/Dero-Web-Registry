@@ -7,6 +7,7 @@ import AddCategory from "./components/addCategory";
 import NameRegistrar from "./components/nameRegistrar";
 import Lotto from "./components/lotto";
 import Mint from "./components/mint";
+import Browse from "./components/browse";
 
 export default function ParseRegistry() {
   let registry = {};
@@ -53,11 +54,11 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
-        {/*<Tab eventKey="categories" title="Categories">
+        <Tab eventKey="categories" title="Categories">
           <div style={{ marginTop: "20px" }}>
-            <AddCategory />
+            <Browse />
           </div>
-  </Tab>*/}
+        </Tab>
       </Tabs>
     </>
   );
