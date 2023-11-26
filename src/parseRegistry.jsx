@@ -16,7 +16,7 @@ export default function ParseRegistry() {
   const [getSC] = useGetSC();
   const [data, setData] = useState({});
   const [state, setState] = useContext(LoginContext);
-  const [key, setKey] = useState("register");
+  const [key, setKey] = useState("dns");
 
   useEffect(() => {
     const getData = async () => {
