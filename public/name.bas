@@ -8,9 +8,9 @@ Function Initialize(url String) Uint64
 50 RETURN 1
 End Function
 
-Function SetUrl(url String, type String) Uint64
+Function SetUrl(url String, t String) Uint64
 10 IF ASSETVALUE(SCID()) ==0 && SIGNER() != ADDRESS_RAW(LOAD("OWNER")) THEN GOTO 100
-20 STORE(".deroWeb"+type,url)
+20 STORE(".deroWeb"+t,url)
 30 SEND_ASSET_TO_ADDRESS(SIGNER(),ASSETVALUE(SCID()),SCID())
 99 RETURN 0
 100 RETURN 1

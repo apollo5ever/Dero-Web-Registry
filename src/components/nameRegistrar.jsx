@@ -18,11 +18,11 @@ export default function NameRegistrar({ setKey }) {
     const value = e.target.value;
     setName(value);
 
-    if (value.endsWith(".dero")) {
+    if (value.endsWith(".dns")) {
       const availability = await checkNameAvailability(
         state.scid,
         value.slice(0, -5),
-        ".dero"
+        ".dns"
       );
 
       if (availability.scid) {
@@ -42,11 +42,11 @@ export default function NameRegistrar({ setKey }) {
     let names = await assetLookup(state.scid, asset);
     await registerName(
       state.scid,
-      name.slice(0, -5),
+      name.slice(0, -4),
       asset,
       "",
       names.length,
-      ".dero"
+      ".dns"
     );
     console.log("index", names.length);
 
@@ -55,9 +55,9 @@ export default function NameRegistrar({ setKey }) {
 
   return (
     <div className="container mt-5">
-      <h1>Register Your .dero Domain Name</h1>
+      <h1>Register Your .dns Domain Name</h1>
       <p>
-        You must prepare an asset to pair your .dero name with. Each .dero name
+        You must prepare an asset to pair your .dns name with. Each .dns name
         registration will cost 1 dns.
       </p>
       <div className="mb-3">

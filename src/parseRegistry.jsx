@@ -8,6 +8,8 @@ import NameRegistrar from "./components/nameRegistrar";
 import Lotto from "./components/lotto";
 import Mint from "./components/mint";
 import Browse from "./components/browse";
+import UserAssets from "./components/userAssets";
+import DnsRegistrar from "./components/dnsRegistrar";
 
 export default function ParseRegistry() {
   let registry = {};
@@ -38,7 +40,12 @@ export default function ParseRegistry() {
         activeKey={key}
         onSelect={(k) => setKey(k)}
       >
-        <Tab eventKey="register" title=".dero Name Registration">
+        <Tab eventKey="dns" title=".dero Name Registration">
+          <div style={{ marginTop: "20px" }}>
+            <DnsRegistrar setKey={setKey} />
+          </div>
+        </Tab>
+        <Tab eventKey="register" title=".dns Name Registration">
           <div style={{ marginTop: "20px" }}>
             <NameRegistrar setKey={setKey} />
           </div>
@@ -54,11 +61,14 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
-        <Tab eventKey="categories" title="Categories">
+        {/* <Tab eventKey="categories" title="Categories">
           <div style={{ marginTop: "20px" }}>
             <Browse />
           </div>
         </Tab>
+        <Tab eventKey="userAssets" title="Manage Your Assets">
+          <div style={{ marginTop: "20px" }}></div>
+        </Tab> */}
       </Tabs>
     </>
   );

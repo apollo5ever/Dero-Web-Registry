@@ -219,8 +219,8 @@ export default function Mint() {
     <div className="container mt-5">
       <h1>Mint Your Domain Name Asset</h1>
       <p>
-        Any Dero asset can be registered with a Dero Web .dero domain name.
-        Furthermore, you can transfer a .dero domain name from one asset to
+        Any Dero asset can be registered with a Dero Web .dns domain name.
+        Furthermore, you can transfer a .dns domain name from one asset to
         another, as long as you own both the old and new asset. In order for
         your asset to be compatible with the Dero Web browser extension, it
         needs to contain properly formatted data.
@@ -264,12 +264,12 @@ export default function Mint() {
       )}
       {mintType === "OAO" && (
         <div className="mb-4">
-          <h3>OAO .dero control</h3>
+          <h3>OAO .dns control</h3>
           <p>
             The most complicated and powerful option. This allows an
-            organization instead of an individual to control a .dero domain
-            name. If you don't already have role tokens you can mint them on
-            this page.
+            organization instead of an individual to control a .dns domain name.
+            If you don't already have role tokens you can mint them on this
+            page.
           </p>
 
           <h4>Add Roles</h4>
@@ -357,7 +357,7 @@ export default function Mint() {
               />
             </div>
             <div className="mb-3">
-              <label>URL for .dero content</label>
+              <label>URL for .dns content</label>
               <input
                 className="form-control"
                 placeholder="http://"
@@ -388,8 +388,8 @@ export default function Mint() {
           </p>
           <p>
             This involves two registrations. First a Private Islands
-            Registration which costs 0.1 Dero. Then a .dero registration which
-            costs 1 DNS. Your .dero domain name will link to your island page on
+            Registration which costs 0.1 Dero. Then a .dns registration which
+            costs 1 DNS. Your .dns domain name will link to your island page on
             Private Islands.
           </p>
           <div className="mb-3">
@@ -438,7 +438,7 @@ export default function Mint() {
             </a>{" "}
             and can be listed and traded there. G45-NFT metadata is immutable
             which means that once you set the URL it cannot be changed. Remember
-            though it is possible to transfer the .dero name from one asset to
+            though it is possible to transfer the .dns name from one asset to
             another so don't sweat it.
           </p>
           <div className="mb-3">
@@ -486,7 +486,7 @@ export default function Mint() {
             has two address-based roles, "creator" and "owner". Metadata can
             always be updated by the creator and sometimes it can be updated by
             the owner as well. This standard uses a built-in market place in
-            each contract. For use as a .dero domain name, use the fileURL
+            each contract. For use as a .dns domain name, use the fileURL
             variable.
           </p>
           <div className="mb-3">

@@ -8,7 +8,7 @@ const RpcToggle = () => {
   const [checked, setChecked] = useState(false);
   const [state, setState] = useContext(LoginContext);
   const [walletMode, setWalletMode] = useState("rpc");
-  const [daemonMode, setDaemonMode] = useState("pools");
+  const [daemonMode, setDaemonMode] = useState("user");
   const [fetchWalletInfo] = useRPCWallet();
 
   const walletModes = [

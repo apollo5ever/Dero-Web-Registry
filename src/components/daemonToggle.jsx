@@ -6,7 +6,7 @@ import { LoginContext } from "../LoginContext";
 const DaemonToggle = () => {
   const [checked, setChecked] = useState(false);
   const [state, setState] = useContext(LoginContext);
-  const [daemonMode, setDaemonMode] = useState("pools");
+  const [daemonMode, setDaemonMode] = useState("user");
 
   const daemonModes = [
     { name: "Pools", value: "pools" },
