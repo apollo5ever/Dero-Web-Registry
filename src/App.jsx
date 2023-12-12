@@ -12,6 +12,7 @@ import { useInitXSWD } from "./useInitXSWD";
 import RpcToggle from "./components/rpcToggle";
 import DaemonToggle from "./components/daemonToggle";
 import { Row } from "react-bootstrap";
+import "./App.css";
 
 function App() {
   const [state, setState] = useContext(LoginContext);

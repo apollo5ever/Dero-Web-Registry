@@ -3,6 +3,7 @@ import { useMintOAO } from "./useMintOAO";
 import { useMintBNT } from "./useMintBNT";
 import { useMintIsland } from "./useMintIsland";
 import { useMintG45 } from "./useMintG45";
+import { useMintDeroID } from "./useMintDeroID";
 
 export function useMintAsset() {
   const [mintSeat] = useMintSeat();
@@ -10,6 +11,7 @@ export function useMintAsset() {
   const [mintBNT] = useMintBNT();
   const [mintIsland] = useMintIsland();
   const [mintG45] = useMintG45();
+  const [mintDeroID] = useMintDeroID();
 
   async function mintAsset(type, data) {
     console.log("Mint asset type: ", type);
@@ -58,6 +60,13 @@ export function useMintAsset() {
         return txid;
       } catch (error) {
         console.error("Error minting g45:", error);
+      }
+    } else if (type === "DeroID") {
+      try {
+        let txid = await mintDeroID(data);
+        return txid;
+      } catch (error) {
+        console.error("Error minting DeroID");
       }
     }
   }
