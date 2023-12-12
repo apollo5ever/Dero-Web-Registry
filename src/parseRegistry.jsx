@@ -10,6 +10,7 @@ import Mint from "./components/mint";
 import Browse from "./components/browse";
 import UserAssets from "./components/userAssets";
 import DnsRegistrar from "./components/dnsRegistrar";
+import DeroID from "./components/deroID";
 
 export default function ParseRegistry() {
   let registry = {};
@@ -61,6 +62,11 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
+        {/* <Tab eventKey="deroid" title="DeroID">
+          <div style={{ marginTop: "20px" }}>
+            <DeroID />
+          </div>
+        </Tab> */}
         {/* <Tab eventKey="categories" title="Categories">
           <div style={{ marginTop: "20px" }}>
             <Browse />
