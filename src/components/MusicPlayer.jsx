@@ -255,11 +255,7 @@ const MusicPlayer = ({ inputString }) => {
     };
   }, [inputString]); */
 
-  return (
-    <div onClick={playChords}>
-      <Identicon inputString={inputString} />
-    </div>
-  ); // You can replace this with your UI
+  return <Identicon playChords={playChords} inputString={inputString} />; // You can replace this with your UI
 };
 
 export default MusicPlayer;

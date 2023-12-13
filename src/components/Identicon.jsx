@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import MusicPlayer from "./MusicPlayer";
 
-const Identicon = ({ inputString, size = 200 }) => {
+const Identicon = ({ inputString, size = 200, playChords }) => {
   const canvasRef = useRef(null);
 
   const syllables = [
@@ -206,9 +206,7 @@ const Identicon = ({ inputString, size = 200 }) => {
   }, [inputString, size]);
 
   return (
-    <div>
-      <canvas ref={canvasRef} width={size} height={size} />
-    </div>
+    <canvas onClick={playChords} ref={canvasRef} width={size} height={size} />
   );
 };
 

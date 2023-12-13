@@ -62,11 +62,11 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
-        {/* <Tab eventKey="deroid" title="DeroID">
+        <Tab eventKey="deroid" title="DeroID">
           <div style={{ marginTop: "20px" }}>
             <DeroID />
           </div>
-        </Tab> */}
+        </Tab>
         {/* <Tab eventKey="categories" title="Categories">
           <div style={{ marginTop: "20px" }}>
             <Browse />
