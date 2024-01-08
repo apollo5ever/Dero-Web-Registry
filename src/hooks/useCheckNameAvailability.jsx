@@ -6,7 +6,7 @@ export function useCheckNameAvailability() {
 
   async function checkNameAvailability(scid, name, collection) {
     let registryData = await getSC(scid, false, true, null, null, [
-      `a${collection + name}`,
+      `expiry:${name}`,
     ]);
     console.log(registryData.valuesstring);
     if (registryData.valuesstring[0].startsWith("NOT")) {
