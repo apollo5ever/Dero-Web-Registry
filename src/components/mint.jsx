@@ -4,6 +4,7 @@ import { useSendTransaction } from "../hooks/useSendTransaction";
 import { useMintAsset } from "../hooks/useMintAsset";
 import { useGetBalance } from "../hooks/useGetBalance";
 import { useGetAddress } from "../hooks/useGetAddress";
+import DeroID from "./deroID";
 
 export default function Mint() {
   const [sendTransaction] = useSendTransaction();
@@ -12,6 +13,7 @@ export default function Mint() {
   const [getAddress] = useGetAddress();
   const assetTypes = [
     "Basic Name Token",
+    "DeroID",
     "OAO",
     "G45-NFT",
     "Artificer NFA",
@@ -428,6 +430,11 @@ export default function Mint() {
           </div>
         </div>
       )}
+      {mintType === "DeroID" && (
+        <div className="mb-4">
+          <DeroID />
+        </div>
+      )}
       {mintType === "G45-NFT" && (
         <div className="mb-4">
           <h3>G45-NFT</h3>
@@ -524,7 +531,7 @@ export default function Mint() {
           </div>
         </div>
       )}
-      <Button onClick={mint}>Mint</Button>
+      {mintType != "DeroID" && <Button onClick={mint}>Mint</Button>}
     </div>
   );
 }

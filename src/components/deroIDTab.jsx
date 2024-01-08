@@ -10,10 +10,17 @@ import RichTextEditor from "./richTextEditor";
 import { useSendTransaction } from "../hooks/useSendTransaction";
 import { useGetGasEstimate } from "../hooks/useGetGasEstimate";
 import { useGetAddress } from "../hooks/useGetAddress";
+import { useGetSC } from "../hooks/useGetSC";
+import hex2a from "../hex2a";
 
-export default function DeroID() {
+export default function DeroIDTab() {
+  const dnsRegistrarSCIDMainnet = "";
+  const dnsRegistrarSCIDSimulator =
+    "9c641071a8dcca07dd4faaefbeb0cfd18512c649b773be8add9019ddd865c886";
+  const dnsRegistrarSCID = dnsRegistrarSCIDSimulator;
   const [mintAsset] = useMintAsset();
   const [getAddress] = useGetAddress();
+  const [getSC] = useGetSC();
   const [sendTransaction] = useSendTransaction();
   const [getGasEstimate] = useGetGasEstimate();
   const [scid, setScid] = useState("");
@@ -22,6 +29,7 @@ export default function DeroID() {
   const [getBalance] = useGetBalance();
   const [plaintext, setPlaintext] = useState(false);
   const [editorHtml, setEditorHtml] = useState("");
+  const [search, setSearch] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     url: "",
@@ -30,6 +38,108 @@ export default function DeroID() {
     bio: "",
   });
   const [reputation, setReputation] = useState(null);
+
+  const [id, setID] = useState({
+    scid: "",
+    name: "",
+    reputation: null,
+    image: "",
+    description: "",
+    url: "",
+  });
+
+  const getID = async () => {
+    console.log(search);
+    let newID = new Object({
+      scid: "",
+      name: "",
+      reputation: null,
+      image: "",
+      bio: "",
+    });
+    console.log(newID);
+    if (search.length == 64) {
+      console.log("scid probably entered");
+      const sc = await getSC(
+        search,
+        false,
+        true,
+        -1,
+        [],
+        ["image", "bio", "OWNER"]
+      );
+      console.log("getID ", sc);
+      if (sc.stringkeys) {
+        newID.scid = search;
+        newID.name = "";
+        console.log("scid confirmed");
+        if (!sc.valuesstring[0].startsWith("N")) {
+          newID.image = hex2a(sc.valuesstring[0]);
+        }
+
+        if (!sc.valuesstring[1].startsWith("N")) {
+          newID.bio = hex2a(sc.valuesstring[1]);
+        }
+        if (!sc.valuesstring[2].startsWith("N")) {
+          newID.address = hex2a(sc.valuesstring[2]);
+          console.log("don't start with N", newID);
+        }
+
+        setID(newID);
+        return;
+      }
+    }
+    const sc = await getSC(
+      dnsRegistrarSCID,
+      false,
+      true,
+      -1,
+      [],
+      [`datatype:${search}`, `data:${search}`]
+    );
+    console.log(sc);
+    if (hex2a(sc.valuesstring[0]) == "DeroID") {
+      const idSCID = hex2a(sc.valuesstring[1]);
+      newID.scid = idSCID;
+      newID.name = search;
+      const idSC = await getSC(
+        idSCID,
+        false,
+        true,
+        -1,
+        [],
+        ["image", "bio", "OWNER"]
+      );
+      if (!idSC.valuesstring[0].startsWith("N")) {
+        newID.image = hex2a(idSC.valuesstring[0]);
+      }
+      if (!idSC.valuesstring[1].startsWith("N")) {
+        newID.bio = hex2a(idSC.valuesstring[1]);
+        console.log("don't start with N", newID);
+      }
+      if (!idSC.valuesstring[2].startsWith("N")) {
+        newID.address = hex2a(idSC.valuesstring[2]);
+        console.log("don't start with N", newID);
+      }
+      console.log("setID ", newID);
+      const repSC = await getSC(
+        "fbfd3b52464a15954b39a4de0b925d2942e4fd85ea31377c95c3f9c5d7835ec7",
+        false,
+        true
+      );
+      let repVars = repSC.stringkeys;
+      let repKeys = Object.keys(repVars).filter(
+        (x) => x.startsWith(`rating:${newID.scid}`) && x.endsWith("trust")
+      );
+      let score = 0;
+      for (let i = 0; i < repKeys.length; i++) {
+        score = score + repVars[repKeys[i]];
+      }
+      newID.reputation = score;
+
+      setID(newID);
+    }
+  };
 
   const mint = async () => {
     const scid = await mintAsset("DeroID");
@@ -43,10 +153,7 @@ export default function DeroID() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setSearch(value);
   };
 
   const updateMetadata = async (key, value, type) => {
@@ -160,76 +267,30 @@ export default function DeroID() {
         authentication key for dAPPS. Use it to store and prove ownership of
         other Dero assets. All fields are optional.
       </p>
-      <div className="mb-3">
-        <label htmlFor="image" className="form-label">
-          Image:
-        </label>
-        <input
-          className="form-control"
-          placeholder="image"
-          id="image"
-          name="image"
-          type="text"
-          value={formData.image}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="bio" className="form-label">
-          Bio:
-        </label>
-        {plaintext ? (
-          <>
-            <textarea
-              className="form-control"
-              placeholder="Enter your bio"
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-            />
-            <p
-              className="text-muted"
-              onClick={togglePlaintext}
-              style={{ cursor: "pointer" }}
-            >
-              Switch to Rich Text Editor
-            </p>
-          </>
-        ) : (
-          <>
-            <RichTextEditor
-              setEditorHtml={setEditorHtml}
-              editorHtml={editorHtml}
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-            />
-            <p
-              className="text-muted"
-              onClick={togglePlaintext}
-              style={{ cursor: "pointer" }}
-            >
-              Switch to Plain Text Editor
-            </p>
-          </>
-        )}
-      </div>
-
-      <Button onClick={mint}>Mint</Button>
-      <br />
-      <br />
-      <br />
-      <IDCard
-        scid={scid}
-        bio={formData.bio}
-        richBio={editorHtml}
-        image={formData.image}
-        plaintext={plaintext}
-        address={address}
-        reputation={reputation}
+      <h4>Look Up DeroID</h4>
+      <input
+        className="form-control"
+        placeholder="Enter Name or SCID..."
+        value={search}
+        onChange={handleChange}
       />
+      <Button onClick={getID}>Search</Button>
+
+      <br />
+      <br />
+      <br />
+      {id.scid && (
+        <IDCard
+          scid={id.scid}
+          bio={formData.bio}
+          richBio={id.bio}
+          image={id.image}
+          plaintext={false}
+          address={id.address}
+          reputation={id.reputation}
+          name={id.name}
+        />
+      )}
     </div>
   );
 }

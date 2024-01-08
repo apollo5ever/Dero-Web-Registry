@@ -9,7 +9,15 @@ export function useRegisterName() {
   const [state, setState] = useContext(LoginContext);
   // const logger = useContext(LoggerContext);
 
-  async function registerName(scid, name, asset, token, index, collection) {
+  async function registerName(
+    scid,
+    name,
+    key,
+    dataToken,
+    owner,
+    datatype,
+    transferCost
+  ) {
     let address = await getRandomAddress();
 
     //removed asset burn, I think that was unnecessary
@@ -17,6 +25,12 @@ export function useRegisterName() {
     let data = {
       scid: scid,
       ringsize: 2,
+      transfers: [
+        {
+          burn: 10000,
+          destination: address,
+        },
+      ],
       /*transfers: [
         {
           scid: state.dns,
@@ -28,12 +42,7 @@ export function useRegisterName() {
         {
           name: "entrypoint",
           datatype: "S",
-          value: "RegisterAsset",
-        },
-        {
-          name: "collection",
-          datatype: "S",
-          value: collection,
+          value: "Register",
         },
         {
           name: "name",
@@ -41,14 +50,29 @@ export function useRegisterName() {
           value: name,
         },
         {
-          name: "scid",
+          name: "key",
           datatype: "S",
-          value: asset,
+          value: key,
         },
         {
-          name: "index",
+          name: "owner",
+          datatype: "S",
+          value: owner,
+        },
+        {
+          name: "data",
+          datatype: "S",
+          value: dataToken,
+        },
+        {
+          name: "datatype",
+          datatype: "S",
+          value: datatype,
+        },
+        {
+          name: "transferCost",
           datatype: "U",
-          value: parseInt(index),
+          value: transferCost,
         },
       ],
     };

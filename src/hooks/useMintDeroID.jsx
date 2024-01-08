@@ -13,6 +13,7 @@ export function useMintDeroID() {
         sc,
         sc_rpc: [{ name: "entrypoint", datatype: "S", value: "Initialize" }],
       });
+      console.log("mintderoid txid", result);
       return result;
     } catch (error) {
       console.error("Error reading or sending transaction:", error);

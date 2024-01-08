@@ -5,9 +5,9 @@ Function Initialize() Uint64
 90 RETURN 0
 End Function
 
-Function UpdateVar(key String, value String, type String) Uint64
+Function UpdateVar(key String, value String, t String) Uint64
 5 IF notOwner() THEN GOTO 90
-10 IF type == "U" THEN GOTO 30
+10 IF t == "U" THEN GOTO 30
 20 STORE(key,value)
 25 RETURN 0
 30 STORE(key,ATOI(value))

@@ -98,8 +98,8 @@ const Loop = ({ inputString }) => {
   };
 
   return (
-    <div onClick={play}>
-      <Identicon inputString={inputString} />
+    <div>
+      <Identicon playChords={play} inputString={inputString} />
     </div>
   ); // You can replace this with your UI
 };

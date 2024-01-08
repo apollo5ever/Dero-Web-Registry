@@ -13,6 +13,11 @@ import RpcToggle from "./components/rpcToggle";
 import DaemonToggle from "./components/daemonToggle";
 import { Row } from "react-bootstrap";
 import "./App.css";
+import Home from "./components/home";
+import { Outlet, NavLink } from "react-router-dom";
+
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 function App() {
   const [state, setState] = useContext(LoginContext);
@@ -37,30 +42,45 @@ function App() {
   return (
     <>
       <header>
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
           <Container>
-            <Navbar.Brand>DERO WEB</Navbar.Brand>
-
-            {/*  <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
+            <Navbar.Brand href="#/home">Dero Web</Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="me-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
-                <Nav.Link href="#link">Link</Nav.Link>
-                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
+                <Nav.Link href="#/home">Home</Nav.Link>
+
+                <NavDropdown title="Wallets" id="navbarScrollingDropdown">
+                  <NavDropdown.Item href="#/wallets/register">
+                    New Name
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">
-                    Something
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">
-                    Separated link
+                  <NavDropdown.Item href="#/wallets/manage">
+                    Manage Name
                   </NavDropdown.Item>
                 </NavDropdown>
+                <NavDropdown title="Assets" id="navbarScrollingDropdown">
+                  <NavDropdown.Item href="#/assets/mint">
+                    Mint Asset
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#/assets/register">
+                    New Name
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#/assets/manage">
+                    Manage Name
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link href="#/dns">DNS Holders</Nav.Link>
               </Nav>
-            </Navbar.Collapse>*/}
+              <Form className="d-flex">
+                <Form.Control
+                  type="search"
+                  placeholder="Lookup Name"
+                  className="me-2"
+                  aria-label="Lookup"
+                />
+                <Button variant="outline-success">Lookup</Button>
+              </Form>
+            </Navbar.Collapse>
           </Container>
           <div className="d-flex flex-column">
             <RpcToggle />
@@ -69,7 +89,7 @@ function App() {
         </Navbar>
       </header>
       <main>
-        <ParseRegistry />
+        <Outlet />
       </main>
       <footer></footer>
     </>

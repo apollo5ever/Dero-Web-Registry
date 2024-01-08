@@ -9,15 +9,18 @@ import Lotto from "./components/lotto";
 import Mint from "./components/mint";
 import Browse from "./components/browse";
 import UserAssets from "./components/userAssets";
-import DnsRegistrar from "./components/dnsRegistrar";
 import DeroID from "./components/deroID";
+import Wallets from "./components/wallets";
+import DeroIDTab from "./components/deroIDTab";
+import AssetTab from "./components/assetTab";
+import WalletTab from "./components/walletTab";
 
 export default function ParseRegistry() {
   let registry = {};
   const [getSC] = useGetSC();
   const [data, setData] = useState({});
   const [state, setState] = useContext(LoginContext);
-  const [key, setKey] = useState("dns");
+  const [key, setKey] = useState("wallet");
 
   useEffect(() => {
     const getData = async () => {
@@ -41,14 +44,14 @@ export default function ParseRegistry() {
         activeKey={key}
         onSelect={(k) => setKey(k)}
       >
-        <Tab eventKey="dns" title=".dero Name Registration">
+        <Tab eventKey="wallet" title="Wallet Names">
           <div style={{ marginTop: "20px" }}>
-            <DnsRegistrar setKey={setKey} />
+            <WalletTab />
           </div>
         </Tab>
-        <Tab eventKey="register" title=".dns Name Registration">
+        <Tab eventKey="assets" title="Asset Names">
           <div style={{ marginTop: "20px" }}>
-            <NameRegistrar setKey={setKey} />
+            <AssetTab />
           </div>
         </Tab>
 
@@ -62,11 +65,11 @@ export default function ParseRegistry() {
             <Lotto />
           </div>
         </Tab>
-        {/* <Tab eventKey="deroid" title="DeroID">
+        <Tab eventKey="deroid" title="DeroID">
           <div style={{ marginTop: "20px" }}>
-            <DeroID />
+            <DeroIDTab />
           </div>
-        </Tab> */}
+        </Tab>
         {/* <Tab eventKey="categories" title="Categories">
           <div style={{ marginTop: "20px" }}>
             <Browse />
