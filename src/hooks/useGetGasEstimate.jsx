@@ -6,6 +6,19 @@ export function useGetGasEstimate() {
   const [state, setState] = useContext(LoginContext);
 
   async function getGasEstimate(data) {
+    const payload = {
+      scid: data.scid,
+      ringsize: data.ringsize,
+      transfers: data.transfers,
+      sc_rpc: data.gas_rpc,
+      sc: data.sc,
+      signer: data.signer,
+    };
+
+    const response = await state.xswd.node.GetGasEstimate(payload);
+    console.log(payload);
+    console.log(response);
+    return response.result.gasstorage;
     if (state.daemonMode == "pools") {
       console.log("data data", data);
       let poolData = JSON.stringify({

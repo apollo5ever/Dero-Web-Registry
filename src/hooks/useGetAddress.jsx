@@ -14,6 +14,9 @@ export function useGetAddress() {
   });
 
   async function getAddress(deroBridgeApiRef) {
+    console.log("state", state);
+    const res = await state.xswd.wallet.GetAddress();
+    return res.result.address;
     if (state.walletMode == "rpc") {
       if (!deroBridgeApiRef) {
         deroBridgeApiRef = state.deroBridgeApiRef;

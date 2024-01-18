@@ -16,13 +16,14 @@ export default function NameRegistrar({ setKey }) {
   const [state, setState] = useContext(LoginContext);
   const simulatorscid =
     "9c641071a8dcca07dd4faaefbeb0cfd18512c649b773be8add9019ddd865c886";
-  const dnsRegistrar = simulatorscid;
+  const dnsRegistrar = state.scids.simulator.assetRegistry;
   const [formData, setFormData] = useState({
     owner: "",
     name: "",
     key: "",
     dataToken: "",
     dataType: "",
+    asset: "",
     transferCost: 1,
   });
 
@@ -34,10 +35,19 @@ export default function NameRegistrar({ setKey }) {
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name == "asset") {
+      setFormData({
+        ...formData,
+        dataToken: value,
+        key: value,
+        asset: value,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleNameChange = async (e) => {
@@ -61,8 +71,18 @@ export default function NameRegistrar({ setKey }) {
   };
   const handleRegister = async () => {
     // Add your registration logic here
-    let names = await assetLookup(dnsRegistrar, asset);
-    await registerName(dnsRegistrar, name, asset, "", names.length, ".dns");
+    console.log(dnsRegistrar);
+    // let names = await assetLookup(dnsRegistrar, asset);
+    //await registerName(dnsRegistrar, name, asset, "", names.length, ".dns");
+    await registerName(
+      dnsRegistrar,
+      formData.name,
+      formData.key,
+      formData.dataToken,
+      formData.owner,
+      formData.dataType,
+      formData.transferCost
+    );
     console.log("index", names.length);
 
     console.log(`Registering name: ${name}`);
@@ -80,8 +100,9 @@ export default function NameRegistrar({ setKey }) {
         <input
           type="text"
           placeholder="name"
-          value={name}
-          onChange={handleNameChange}
+          name="name"
+          value={formData.name}
+          onChange={handleFormChange}
           className={`form-control ${!available ? "is-invalid" : ""}`}
         />
         {!available && <div className="invalid-feedback">Name unavailable</div>}
@@ -164,10 +185,11 @@ export default function NameRegistrar({ setKey }) {
         ) : (
           <div>
             <input
-              type="text"
+              className={"form-control"}
               placeholder="asset scid"
-              value={asset}
-              onChange={handleAssetChage}
+              value={formData.asset}
+              name="asset"
+              onChange={handleFormChange}
             />
           </div>
         )}

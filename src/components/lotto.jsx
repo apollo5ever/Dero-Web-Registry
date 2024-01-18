@@ -4,6 +4,12 @@ import { useSendTransaction } from "../hooks/useSendTransaction";
 import { useGetGasEstimate } from "../hooks/useGetGasEstimate";
 import { useGetAddress } from "../hooks/useGetAddress";
 import { useGetSC } from "../hooks/useGetSC";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { Button, Container, Row, Col } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import hex2a from "../hex2a";
+import dateString from "../dateString";
 
 export default function Lotto() {
   const [state, setState] = useContext(LoginContext);
@@ -13,18 +19,23 @@ export default function Lotto() {
   const [getAddress] = useGetAddress();
   const [getSC] = useGetSC();
   const [lottos, setLottos] = useState([]);
+  const [userTickets, setUserTickets] = useState(0);
+  const [ticketsSold, setTicketsSold] = useState(0);
 
-  const scid = state.lotto;
-  const dns = state.dns;
+  const scid = state.scids.simulator.lotto; //state.lotto;
+  const dns = state.scids.simulator.dns; //state.dns;
 
   useEffect(() => {
     const getLotto = async () => {
+      const userAddress = await getAddress();
       let lottos = [];
       const lottoSC = await getSC(scid, false, true);
       const treasuryPattern = /treasury/;
       let assets = Object.keys(lottoSC.stringkeys).filter((x) =>
         treasuryPattern.test(x)
       );
+
+      let userTickets = lottoSC.stringkeys[`${userAddress}_TICKETS`];
       for (let i = 0; i < assets.length; i++) {
         let scid = assets[i].slice(8);
         let nextDraw = lottoSC.stringkeys[`nextDraw${scid}`];
@@ -34,6 +45,8 @@ export default function Lotto() {
           "0000000000000000000000000000000000000000000000000000000000000000"
         ) {
           prize = "DERO";
+        } else {
+          prize = scid;
         }
         let asset = {
           nextDraw: nextDraw,
@@ -44,10 +57,12 @@ export default function Lotto() {
         lottos.push(asset);
       }
       setLottos(lottos);
+      setTicketsSold(lottoSC.stringkeys.TICKETS);
+      setUserTickets(userTickets);
       console.log("assets: ", assets);
     };
     getLotto();
-  }, [state.daemonMode]);
+  }, [state.xswd]);
 
   const handleAmountChange = (e) => {
     const value = parseInt(e.target.value, 10);
@@ -66,7 +81,7 @@ export default function Lotto() {
       signer: address,
       transfers: [
         {
-          burn: parseInt(amount * 1000),
+          burn: parseInt(amount * 1000000),
           scid: dns,
         },
       ],
@@ -94,7 +109,7 @@ export default function Lotto() {
       fees: fees,
       transfers: [
         {
-          burn: parseInt(amount * 1000),
+          burn: parseInt(amount * 1000000),
           scid: dns,
         },
       ],
@@ -109,15 +124,15 @@ export default function Lotto() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-6">
+    <Container className="mt-5">
+      <Row>
+        <Col md={6}>
           <h1>Welcome to the DNS Lottery</h1>
           <p>
             Each month the Dero Web OAO will transfer 25% of that month's sales
-            into the DNS Lottery Pool. Each month a winner will be drawn and he
-            will win the entire pool. Winnings are sent out automatically, no
-            need to withdraw.
+            into the DNS Lottery Pool. Each month a winner will be drawn, and
+            they will win the entire pool. Winnings are sent out automatically,
+            no need to withdraw.
           </p>
           <p>
             There are only 50 tickets available. That means each ticket has a
@@ -133,21 +148,51 @@ export default function Lotto() {
             min="1"
             max="50"
           />
-          <button onClick={handlePurchase} className="btn btn-primary">
+          <Button onClick={handlePurchase} className="btn btn-primary">
             Purchase {amount > 0 && `(${amount * 1000} DNS)`}
-          </button>
-        </div>
-        <div className="col-md-6">
+          </Button>
+        </Col>
+        <Col md={6}>
           <div className="prizes">
             <h1>Current Prize Pool</h1>
-            {lottos.map((x, i) => (
-              <p key={i}>
-                Prize # {i + 1}: {x.prize / 100000} {x.asset}
-              </p>
+            {lottos.map((lotto, i) => (
+              <div key={i} className="prize-item">
+                <p>
+                  Prize #{i + 1}: {lotto.prize / 100000} {lotto.asset}{" "}
+                  {dateString(lotto.nextDraw).local}
+                </p>
+              </div>
             ))}
           </div>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={3}>
+          <div className="progress-container">
+            <CircularProgressbar
+              value={ticketsSold * 2}
+              text={`${ticketsSold}/50 Sold`}
+              styles={{
+                path: { stroke: `#4CAF50` },
+                text: { fill: "#4CAF50", fontSize: "8px" },
+              }}
+            />
+          </div>
+        </Col>
+
+        <Col md={3}>
+          <div className="progress-container">
+            <CircularProgressbar
+              value={(100 * userTickets) / ticketsSold}
+              text={`${(100 * userTickets) / ticketsSold}% Chance to Win`}
+              styles={{
+                path: { stroke: `#4CAF50` },
+                text: { fill: "#4CAF50", fontSize: "8px" },
+              }}
+            />
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
