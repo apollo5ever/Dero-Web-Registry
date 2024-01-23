@@ -1,5 +1,5 @@
 Function Initialize() Uint64
-10 STORE("DNS","d5bd6719bf8ab86056bf7130e4d0c7308acbfc5e99e8b92c0d40f0226d838a85")
+10 STORE("DNS","94f68877bf389263f39036d01d1975fedc63082262860c5a1324b7d39b9a2ccf")
 20 STORE(0,"owner:")
 30 STORE(1,"key:")
 40 STORE(2,"data:")
@@ -81,7 +81,7 @@ Function extendExpiry(name String, fresh Uint64) Uint64
 6 LET dns = ASSETVALUE(HEXDECODE(LOAD("DNS")))
 8 add("treasury"+HEX(DERO()),dero)
 9 add("treasury"+LOAD("DNS"),dns)
-10 add("expiry:"+name,DEROVALUE()*16+ASSETVALUE(HEXDECODE(LOAD("DNS")))*315576000+BLOCK_TIMESTAMP()*fresh)
+10 add("expiry:"+name,DEROVALUE()*16+ASSETVALUE(HEXDECODE(LOAD("DNS")))*315576+BLOCK_TIMESTAMP()*fresh)
 11 RETURN 0
 End Function
 

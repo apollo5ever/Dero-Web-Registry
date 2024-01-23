@@ -14,30 +14,29 @@ import DaemonToggle from "./components/daemonToggle";
 import { Row } from "react-bootstrap";
 import "./App.css";
 import Home from "./components/home";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import XSWDConnect from "./components/xswdConnect";
 
 function App() {
   const [state, setState] = useContext(LoginContext);
   const [getSC] = useGetSC();
   const [initXSWD] = useInitXSWD();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const initializeWS = async () => {
-      try {
-        const init = await initXSWD();
-      } catch (error) {
-        console.error("Error sending payload:", error);
+  const [query, setQuery] = useState("");
 
-        setTimeout(() => {
-          initializeWS();
-        }, 1000);
-      }
-    };
-    initializeWS();
-  }, [state.ws]);
+  const handleLookup = () => {
+    // Navigate to the explore route with the user's query
+    navigate(`/explore?q=${encodeURIComponent(query)}`);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    handleLookup(); // Call your lookup function
+  };
 
   return (
     <>
@@ -71,20 +70,23 @@ function App() {
                 </NavDropdown>
                 <Nav.Link href="#/dns">DNS Holders</Nav.Link>
               </Nav>
-              <Form className="d-flex">
+              <Form className="d-flex" onSubmit={handleSubmit}>
                 <Form.Control
                   type="search"
                   placeholder="Lookup Name"
                   className="me-2"
                   aria-label="Lookup"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
-                <Button variant="outline-success">Lookup</Button>
+                <Button variant="outline-success" onClick={handleLookup}>
+                  Lookup
+                </Button>
               </Form>
             </Navbar.Collapse>
           </Container>
           <div className="d-flex flex-column">
-            <RpcToggle />
-            <DaemonToggle />
+            <XSWDConnect />
           </div>
         </Navbar>
       </header>

@@ -150,8 +150,15 @@ export default function Mint() {
   }, [mintStatus, scid]);
 
   const mint = async () => {
-    const scid = await mintAsset(mintType, formData);
-    setScid(scid);
+    if (mintType === "Role Token") {
+      const address = await getAddress();
+      const scid = await mintAsset("Role Token", { address: address });
+      setScid(scid);
+    } else {
+      const scid = await mintAsset(mintType, formData);
+      setScid(scid);
+    }
+
     setAssetType(mintType);
     setMintStatus("waiting");
 

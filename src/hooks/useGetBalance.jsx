@@ -44,6 +44,10 @@ export function useGetBalance() {
   };
 
   async function getBalance(scid) {
+    const response = await state.xswd.wallet.GetBalance({ scid: scid });
+    console.log(response);
+    return response.result.balance;
+
     if (state.walletMode == "xswd") {
       return await getBalanceXSWD(scid);
     } else if (state.walletMode == "rpc") {

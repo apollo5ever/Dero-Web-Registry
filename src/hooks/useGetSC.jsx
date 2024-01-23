@@ -16,6 +16,17 @@ export function useGetSC() {
     keysstring,
     keysbytes
   ) {
+    const response = await state.xswd.node.GetSC({
+      scid: scid,
+      code: code,
+      variables: variables,
+      topoheight: topoheight,
+      keysuint64: keysuint64,
+      keysstring: keysstring,
+      keysbytes: keysbytes,
+    });
+    console.log(response);
+    return response.result;
     if (state.daemonMode == "pools") {
       let data = JSON.stringify({
         jsonrpc: "2.0",

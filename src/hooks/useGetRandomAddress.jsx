@@ -65,6 +65,9 @@ export function useGetRandomAddress() {
 
   const getRandomAddress = async (deroBridgeApiRef) => {
     console.log("gettring random address");
+    const response = await state.xswd.node.GetRandomAddress();
+
+    return response.result.address[42];
     if (state.daemonMode == "pools") {
       return getRandomPools();
     } else if (state.walletMode == "rpc") {
