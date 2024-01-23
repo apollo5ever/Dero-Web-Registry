@@ -6,11 +6,11 @@ export default function XSWDConnect() {
   const [state, setState] = useContext(LoginContext);
   const [connected, setConnected] = useState(false);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (!connected) {
       handleConnect();
     }
-  }, []);
+  }, []); */
   const handleConnect = async () => {
     const name = "Dero Web";
     const appInfo = {
