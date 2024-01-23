@@ -25,19 +25,19 @@ export function useRegisterName() {
     let data = {
       scid: scid,
       ringsize: 2,
-      transfers: [
-        {
+      /* transfers: [
+       {
           burn: 10000,
           destination: address,
         },
-      ],
-      /*transfers: [
-        {
-          scid: state.dns,
-          burn: 1,
-          destination: address,
-      },
       ],*/
+      transfers: [
+        {
+          scid: state.scids.simulator.dns,
+          burn: 1000,
+          destination: address,
+        },
+      ],
       sc_rpc: [
         {
           name: "entrypoint",

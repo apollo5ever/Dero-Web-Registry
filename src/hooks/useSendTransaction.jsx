@@ -16,7 +16,7 @@ export function useSendTransaction() {
   async function sendTransaction(data) {
     console.log(data);
     const response = await state.xswd.wallet.transfer(data);
-
+    console.log("response", response);
     return response.result.txid;
 
     if (state.walletMode == "rpc") {

@@ -81,7 +81,7 @@ Function extendExpiry(name String, fresh Uint64) Uint64
 6 LET dns = ASSETVALUE(HEXDECODE(LOAD("DNS")))
 8 add("treasury"+HEX(DERO()),dero)
 9 add("treasury"+LOAD("DNS"),dns)
-10 add("expiry:"+name,DEROVALUE()*16+ASSETVALUE(HEXDECODE(LOAD("DNS")))*315576000+BLOCK_TIMESTAMP()*fresh)
+10 add("expiry:"+name,DEROVALUE()*16+ASSETVALUE(HEXDECODE(LOAD("DNS")))*315576+BLOCK_TIMESTAMP()*fresh)
 11 RETURN 0
 End Function
 

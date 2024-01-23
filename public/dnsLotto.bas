@@ -1,6 +1,6 @@
 Function Initialize() Uint64
 10 IF EXISTS("CEO") THEN GOTO 100
-20 STORE("CEO","bf38081b37dd58f3086e81a69e54f8081cbf212d949a2e568e3e783629f0d69d")
+20 STORE("CEO","a9a18010f3b52083d6cb040d9003656386c1a96a547c1d136052c1e239040dea")
 30 STORE("TICKETS",0)
 31 STORE("TICKET_PRICE",1000000)
 40 STORE("nextDraw"+HEX(DERO()),BLOCK_TIMESTAMP())
@@ -131,7 +131,8 @@ End Function
 
 Function Deposit(token String) Uint64
 1 add("treasury"+token,ASSETVALUE(HEXDECODE(token)))
-2 RETURN 0
+2 add("nextDraw"+token,0)
+3 RETURN 0
 End Function
 
 Function Update(code String) Uint64

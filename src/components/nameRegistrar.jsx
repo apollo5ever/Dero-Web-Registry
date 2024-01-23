@@ -81,11 +81,11 @@ export default function NameRegistrar({ setKey }) {
       formData.dataToken,
       formData.owner,
       formData.dataType,
-      formData.transferCost
+      parseInt(formData.transferCost)
     );
     console.log("index", names.length);
 
-    console.log(`Registering name: ${name}`);
+    console.log(`Registering name: ${formData.name}`);
   };
 
   return (

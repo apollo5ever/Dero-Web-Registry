@@ -29,12 +29,12 @@ const LoginProvider = (props) => {
     scids: {
       simulator: {
         assetRegistry:
-          "f00339a150660cabd311fedbb75e582ac0a101152741ff93fa9ed4668361a496",
+          "8675af8bb767dbd3c36e0ece222bbfde8ab7ace5eee45fc54fba8f7d41a7c8b7",
         walletRegistry:
           "d2ea0ca62a6cd1f3a52bdb0dba444df3e47414504cb662c746b0ae759303af8e",
-        dns: "c75a2fe3a8a00dab1931e7cf9c0077a5e2a9bfb0516abde4b88d58c8dccf86f1",
+        dns: "af22a40e06787aa1765166476df3a1b91b2c45bc56a2fe4d55dc07bfe50406d0",
         lotto:
-          "a4794babd817991e7af6d527f30247377a3cb682350793543f21a5bcd0a701c1",
+          "982459643483671140fe899bba97890a071f6a13303f2bd7a270e4af70b575b0",
       },
       mainnet: {
         assetRegistry:

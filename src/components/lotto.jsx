@@ -31,11 +31,21 @@ export default function Lotto() {
       let lottos = [];
       const lottoSC = await getSC(scid, false, true);
       const treasuryPattern = /treasury/;
+
       let assets = Object.keys(lottoSC.stringkeys).filter((x) =>
         treasuryPattern.test(x)
       );
 
-      let userTickets = lottoSC.stringkeys[`${userAddress}_TICKETS`];
+      const ticketPattern = /TICKET_/;
+      let ticketCount = Object.keys(lottoSC.stringkeys).filter((x) =>
+        ticketPattern.test(x)
+      );
+      let userTickets = ticketCount.filter(
+        (x) => hex2a(lottoSC.stringkeys[x]) == userAddress
+      );
+      console.log("userTickets", userTickets);
+
+      // let userTickets = lottoSC.stringkeys[`${userAddress}_TICKETS`];
       for (let i = 0; i < assets.length; i++) {
         let scid = assets[i].slice(8);
         let nextDraw = lottoSC.stringkeys[`nextDraw${scid}`];
@@ -57,7 +67,7 @@ export default function Lotto() {
         lottos.push(asset);
       }
       setLottos(lottos);
-      setTicketsSold(lottoSC.stringkeys.TICKETS);
+      setTicketsSold(ticketCount.length - 1);
       setUserTickets(userTickets);
       console.log("assets: ", assets);
     };
@@ -70,6 +80,62 @@ export default function Lotto() {
     // If the value is valid (a positive integer or zero), update the state.
     // Otherwise, set it to 1 (minimum value).
     setAmount(isNaN(value) || value <= 0 ? 1 : value);
+  };
+
+  const handleRedeem = async () => {
+    const address = await getAddress();
+    let ticketString = "";
+    for (let i = 0; i < amount; i++) {
+      let ticketNumber = userTickets[i].split("_")[1];
+      ticketString += "000000".slice(ticketNumber.length) + ticketNumber;
+    }
+    console.log("user is redeeming ", amount, " tickets");
+    const fees = await getGasEstimate({
+      scid: scid,
+      ringsize: 2,
+      signer: address,
+
+      gas_rpc: [
+        {
+          name: "SC_ACTION",
+          datatype: "U",
+          value: 0,
+        },
+        {
+          name: "SC_ID",
+          datatype: "H",
+          value: scid,
+        },
+        {
+          name: "entrypoint",
+          datatype: "S",
+          value: "RedeemDNS",
+        },
+        {
+          name: "ticket",
+          datatype: "S",
+          value: ticketString,
+        },
+      ],
+    });
+    sendTransaction({
+      scid: scid,
+      ringsize: 2,
+      fees: fees,
+
+      sc_rpc: [
+        {
+          name: "entrypoint",
+          datatype: "S",
+          value: "RedeemDNS",
+        },
+        {
+          name: "ticket",
+          datatype: "S",
+          value: ticketString,
+        },
+      ],
+    });
   };
 
   const handlePurchase = async () => {
@@ -151,18 +217,24 @@ export default function Lotto() {
           <Button onClick={handlePurchase} className="btn btn-primary">
             Purchase {amount > 0 && `(${amount * 1000} DNS)`}
           </Button>
+          {"          "}
+          <Button onClick={handleRedeem} className="btn btn-primary">
+            Redeem {amount > 0 && `(${amount * 1000} DNS)`}
+          </Button>
         </Col>
         <Col md={6}>
           <div className="prizes">
             <h1>Current Prize Pool</h1>
-            {lottos.map((lotto, i) => (
-              <div key={i} className="prize-item">
-                <p>
-                  Prize #{i + 1}: {lotto.prize / 100000} {lotto.asset}{" "}
-                  {dateString(lotto.nextDraw).local}
-                </p>
-              </div>
-            ))}
+            {lottos
+              .filter((x) => x.prize != 0)
+              .map((lotto, i) => (
+                <div key={i} className="prize-item">
+                  <p>
+                    Prize #{i + 1}: {lotto.prize / 100000} {lotto.asset}{" "}
+                    {dateString(lotto.nextDraw).local}
+                  </p>
+                </div>
+              ))}
           </div>
         </Col>
       </Row>
@@ -183,8 +255,10 @@ export default function Lotto() {
         <Col md={3}>
           <div className="progress-container">
             <CircularProgressbar
-              value={(100 * userTickets) / ticketsSold}
-              text={`${(100 * userTickets) / ticketsSold}% Chance to Win`}
+              value={(100 * userTickets.length) / ticketsSold}
+              text={`${Math.round(
+                (100 * userTickets.length) / ticketsSold
+              )}% Chance to Win`}
               styles={{
                 path: { stroke: `#4CAF50` },
                 text: { fill: "#4CAF50", fontSize: "8px" },
