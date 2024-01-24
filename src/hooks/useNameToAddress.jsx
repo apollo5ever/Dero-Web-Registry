@@ -8,6 +8,13 @@ export function useNameToAddress() {
   // const logger = useContext(LoggerContext);
 
   async function nameToAddress(name) {
+    let res = await state.xswd.node.NameToAddress({ name: name });
+    console.log(res);
+    if (res.error) {
+      return "";
+    }
+    return res.result.address;
+    return;
     if (state.daemonMode == "pools") {
       let data = JSON.stringify({
         jsonrpc: "2.0",

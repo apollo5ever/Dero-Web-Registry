@@ -60,7 +60,7 @@ export default function Mint() {
       const scid = await mintAsset("Role Token", { address: address });
       setFormData({ ...formData, ceo: scid });
     } else if (type === "Trustee") {
-      if (!formData.trusteeAddresses[index]?.startsWith("dero")) {
+      if (!formData.trusteeAddresses[index]?.startsWith("de")) {
         let warning = formData.trusteeAddresses;
         warning[index] = "MUST FIRST SPECIFY ADDRESS!!";
         setFormData({ ...formData, trusteeAddresses: warning });
