@@ -22,8 +22,8 @@ export default function Lotto() {
   const [userTickets, setUserTickets] = useState(0);
   const [ticketsSold, setTicketsSold] = useState(0);
 
-  const scid = state.scids.simulator.lotto; //state.lotto;
-  const dns = state.scids.simulator.dns; //state.dns;
+  const scid = state.scids.mainnet.lotto; //state.lotto;
+  const dns = state.scids.mainnet.dns; //state.dns;
 
   useEffect(() => {
     const getLotto = async () => {

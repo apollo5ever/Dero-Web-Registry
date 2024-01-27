@@ -33,7 +33,7 @@ export function useRegisterName() {
       ],*/
       transfers: [
         {
-          scid: state.scids.simulator.dns,
+          scid: state.scids.mainnet.dns,
           burn: 1000,
           destination: address,
         },

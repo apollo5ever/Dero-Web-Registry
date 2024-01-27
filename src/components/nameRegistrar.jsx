@@ -16,7 +16,7 @@ export default function NameRegistrar({ setKey }) {
   const [state, setState] = useContext(LoginContext);
   const simulatorscid =
     "9c641071a8dcca07dd4faaefbeb0cfd18512c649b773be8add9019ddd865c886";
-  const dnsRegistrar = state.scids.simulator.assetRegistry;
+  const dnsRegistrar = state.scids.mainnet.assetRegistry;
   const [formData, setFormData] = useState({
     owner: "",
     name: "",

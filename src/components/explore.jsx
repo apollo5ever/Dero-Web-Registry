@@ -25,7 +25,7 @@ export default function Explore() {
   const [wallet, setWallet] = useState("");
 
   const getSCID = async () => {
-    let result = await getSC(state.scids.simulator.assetRegistry, false, true);
+    let result = await getSC(state.scids.mainnet.assetRegistry, false, true);
     const dataToken = hex2a(result.stringkeys[`data:${q}`]);
     const dataType = hex2a(result.stringkeys[`datatype:${q}`]);
     setDataToken(dataToken);

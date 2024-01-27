@@ -20,7 +20,7 @@ export default function XSWDConnect() {
     };
     const xswd = new Api(appInfo);
     xswd.config.ip = "127.0.0.1";
-    setState({ ...state, xswd: xswd });
+    //setState({ ...state, xswd: xswd });
     await xswd.initialize();
     console.log(xswd);
 

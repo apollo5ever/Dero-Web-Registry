@@ -11,6 +11,7 @@ import Home from "./components/home.jsx";
 import WalletNameRegistrar from "./components/walletNameRegistration.jsx";
 import ManageAsset from "./components/manageAsset.jsx";
 import Explore from "./components/explore.jsx";
+import Hodler from "./components/hodler.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -26,7 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/assets/register" element={<NameRegistrar />} />
           <Route path="/wallets/register" element={<WalletNameRegistrar />} />
           <Route path="/wallets/manage" element={<Wallets />} />
-          <Route path="/dns" element={<Lotto />} />
+          <Route path="/dns" element={<Hodler />} />
         </Routes>
       </HashRouter>
     </LoginProvider>
