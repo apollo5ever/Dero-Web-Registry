@@ -25,19 +25,20 @@ export default function Explore() {
   const [wallet, setWallet] = useState("");
 
   const getSCID = async () => {
+    let name = q.toLowerCase();
     let result = await getSC(state.scids.mainnet.assetRegistry, false, true);
-    const dataToken = hex2a(result.stringkeys[`data:${q}`]);
-    const dataType = hex2a(result.stringkeys[`datatype:${q}`]);
+    const dataToken = hex2a(result.stringkeys[`data:${name}`]);
+    const dataType = hex2a(result.stringkeys[`datatype:${name}`]);
     setDataToken(dataToken);
     setDatatype(dataType);
     switch (dataType) {
       case "DeroID":
         console.log("datatype is ", dataType);
-        const deroID = await getDeroIDCard(dataToken, q);
+        const deroID = await getDeroIDCard(dataToken, name);
         setDeroID(deroID);
       case "OAO":
         console.log("datatype is ", dataType);
-        const oao = await getOAOCard(dataToken, q);
+        const oao = await getOAOCard(dataToken, name);
         setOAO(oao);
       case "BNT":
         console.log("datatype is", dataType);
