@@ -16,8 +16,10 @@ Function UpdateVar(key String, value String, t String) Uint64
 End Function
 
 Function DelVar(key String) Uint64
+5 IF notOwner() THEN GOTO 90
 10 DELETE(key)
 20 RETURN 0
+90 RETURN 1
 End Function
 
 Function Deposit(asset String) Uint64
